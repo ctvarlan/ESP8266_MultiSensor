@@ -35,25 +35,25 @@ String		google		= "www.google.com";
 const 		char displayName[] 	= "Hey Google";	        //The name of your Google Home (mini) as given in its settings
 //-----------------------------------------------
 
-        int	count		=	0;
-        int	pw_sens[]	=	{14,12,13,15};	//pins to power the sensors
-        int	m_sens[]	=	{0, 0, 0, 0 };	//the measured values from sensors
-        int	m_per[]		=	{0, 0, 0, 0 };	//the percent values
-	bool	warn[]		=	{0, 0, 0, 0 };	//the fields with warning msg
-        int	active		=	1000;		//1sec power on to allow stabilization
-        int	idle		=	3000;		//3sec to allow discharge of output cap
-	int	H_max		=	582;            //get this values from calibration
-	int	H_min		=	339;            //get this values from calibration
+int	count			=	0;
+int	pw_sens[]		=	{14,12,13,15};	//pins to power the sensors
+int	m_sens[]		=	{0, 0, 0, 0 };	//the measured values from sensors
+int	m_per[]			=	{0, 0, 0, 0 };	//the percent values
+bool	warn[]		=	{0, 0, 0, 0 };	//the fields with warning msg
+int	active			=	1000;		//1sec power on to allow stabilization
+int	idle			=	3000;		//3sec to allow discharge of output cap
+int	H_max			=	582;            //get this values from calibration
+int	H_min			=	339;            //get this values from calibration
 
-	int	hp_minW		=	40;		//min humidity Warning level 50%
-	int	second      	= 	0;
-	int	minute      	= 	0;
-	int	hour        	= 	0;
-        
-	float   vcc     	=   0.0;
-        float   Vcc_min 	=   2.9;
-        float   V_corr  	=   1.5;    		//corection due to the measurement circuit
-        int 	d           	=   500;
+int	hp_minW			=	40;		//min humidity Warning level 50%
+int	second      	= 	0;
+int	minute      	= 	0;
+int	hour        	= 	0;
+
+float   vcc     	=   0.0;
+float   Vcc_min 	=   2.9;
+float   V_corr  	=   1.5;    		//corection due to the measurement circuit
+int 	d          	=   500;
 
 String  getTime();
 void    readMoist();
@@ -170,6 +170,7 @@ void loop()
 	{
 		//message to Tweeter, from ThingSpeak
 		int tt = ThingSpeak.setTwitterTweet(TWITTER_ACC, myStatus);
+		
 		if(tt == 200)
 		{
 			Serial.println("Tweet sent OK");
@@ -181,7 +182,7 @@ void loop()
 		//-------------------------------------------------------Twitter
 		
 		//message to Google Home Notifier
-		String notif2 = String(flag);   //how many are at low level
+		String notif2 = String(flag);   //how many pots are at low level
 		notif = notif1 + notif2 + notif3;
 		if ((hour >= 8) && (hour < 22))
 		{
@@ -212,7 +213,7 @@ void loop()
     Serial.println("Hour: " + String(hour));
     WiFi.disconnect();
     Serial.println("WiFi disconnected.");
-    long sleep = SLEEP_TIME_SECONDS * 1000000L - 8;
+    long sleep = SLEEP_TIME_SECONDS * 1000000L - 8;		//some correction
     Serial.print("Go to sleep for ");
     Serial.print(SLEEP_TIME_SECONDS);
     Serial.println(" Seconds" );//
@@ -224,55 +225,55 @@ void loop()
 String getTime()
 {
 //in the main prog is defined the client to access google as glient
-  Serial.println(F("connecting to google"));//@
-  //Serial.println(google);			//@
-  glient.setTimeout(5000);                  //at the beginning
-  
-  const int httpPort = 80;                  //at the beginning
-  if (!glient.connect(google, httpPort)) 
-  {
-  Serial.println(F("connection failed"));
-  return "google_fail";
-  }
+	Serial.println(F("connecting to google"));//@
+	//Serial.println(google);			//@
+	glient.setTimeout(5000);                  //at the beginning
 
-  // This will send the request to the server
-  glient.println("HEAD / HTTP/1.1");
-  glient.println("Host: www.google.com"); // "Host: www.google.com"
-  glient.println("Accept: */*");
-  glient.println("User-Agent: Mozilla/4.0 (compatible; esp8266 Arduino;)");
-  glient.println("Connection: close");
-  glient.println();
-  delay(500);
+	const int httpPort = 80;                  //at the beginning
+	if (!glient.connect(google, httpPort)) 
+	{
+		Serial.println(F("connection failed"));
+		return "google_fail";
+	}
 
-  // Read all the characters of the reply from server and print them to Serial
-  String reply = String("");
-  while(glient.available())
-  {
-    char c = glient.read();
-    reply = reply + String(c);
-  }
-  //Serial.print(reply);		//@
-  
-  //String d = reply.substring(reply.indexOf("Date: ")+11,reply.indexOf("Date: ")+23);
-  String t = reply.substring(reply.indexOf("Date: ")+23,reply.indexOf("Date: ")+35);
+	// This will send the request to the server
+	glient.println("HEAD / HTTP/1.1");
+	glient.println("Host: www.google.com"); // "Host: www.google.com"
+	glient.println("Accept: */*");
+	glient.println("User-Agent: Mozilla/4.0 (compatible; esp8266 Arduino;)");
+	glient.println("Connection: close");
+	glient.println();
+	delay(500);
 
-  hour  = t.substring(0, 2).toInt();
-  minute  = t.substring(3, 5).toInt();
-  second  = t.substring(6, 8).toInt();
+	// Read all the characters of the reply from server and print them to Serial
+	String reply = String("");
+	while(glient.available())
+	{
+		char c = glient.read();
+		reply = reply + String(c);
+	}
+	//Serial.print(reply);		//@
 
-  hour = hour + 20;//for summer is 20, for winter is 19
-    if (hour >= 24) 
-    {
-        hour = hour % 24;
-    }
+	//String d = reply.substring(reply.indexOf("Date: ")+11,reply.indexOf("Date: ")+23);	//string for date
+	String t = reply.substring(reply.indexOf("Date: ")+23,reply.indexOf("Date: ")+35);		//string for time
 
-  if(!glient.connected())
-  {
-    //Serial.println("disconnecting");
-    glient.stop();
-  }
-  Serial.println("connection closed");		//@
-  return t;
+	hour  = t.substring(0, 2).toInt();
+	minute  = t.substring(3, 5).toInt();
+	second  = t.substring(6, 8).toInt();
+
+	hour = hour + 20;//for summer is 20, for winter is 19
+	if (hour >= 24) 
+	{
+		hour = hour % 24;
+	}
+
+	if(!glient.connected())
+	{
+		//Serial.println("disconnecting");
+		glient.stop();
+	}
+	Serial.println("connection closed");		//@
+	return t;
 }
 
 void readMoist()    //new funtion
@@ -312,4 +313,4 @@ void readMoist()    //new funtion
 		delay(idle);
 
     }//for
-}//readMoist() new function
+}//readMoist()
