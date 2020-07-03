@@ -12,4 +12,4 @@ const		char* 	myReadAPIKey	= "xxxxxxxxxxxxxxxx"; 	//16 characters
 
 // Hardware information.
 #define SLEEP_TIME_SECONDS 	1800		// 
-#define TWITTER_ACC					"whatever"  //your Twitter handler without @
+#define TWITTER_ACC		"whatever"      //your Twitter handler without @
