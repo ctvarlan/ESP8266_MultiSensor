@@ -1,8 +1,10 @@
 # ESP8266_MultiSensor
+ESP8266, nodeMCU v3.0, GoogleHomeNotifier, ThingSpeak, Twitter, Solar, Humidity, Moisture, AnalogMultiplex, IFTTT
+
 Multi Analog Sensors using the only Analog Input on the ESP8266
 
 The need to have control over my indoor window garden pushed me to find this solution.
-So, this measures the soil moisture for (by now) four pots but can be extended for how many GPIOs are available on the ESP8266 (nodeMCU v1.0). The next step was to use it for outdoor (garden or balcony) with the intention to power it up by solar panels with a minimum of energy used. The solar charger is present and do the job but everything is still for indoor application. For now, there is no automation that kicks in and start pumping water. The results are sent to ThingSpeak, which performs some data processing and graphical presentation and - if conditions arise - send me a notification using the IFTTT platform and also to Google Home Mini to warn me that either the moisture is low or the battery is low.
+So, this measures the soil moisture for (by now) four pots but can be extended for how many GPIOs are available on the ESP8266 (nodeMCU v3.0). The next step was to use it for outdoor (garden or balcony) with the intention to power it up by solar panels with a minimum of energy used. The solar charger is present and do the job but everything is still for indoor application. For now, there is no automation that kicks in and start pumping water. The results are sent to ThingSpeak, which performs some data processing and graphical presentation and - if conditions arise - send me a notification using the IFTTT platform and also to Google Home Mini to warn me that either the moisture is low or the battery is low.
 
 
 
